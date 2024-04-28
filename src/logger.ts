@@ -1,6 +1,6 @@
 import 'winston-daily-rotate-file'
-import { resolve } from 'path'
 
+import { resolve } from 'path'
 import { createLogger, format, transports } from 'winston'
 
 import * as env from './lib/env'

@@ -35,7 +35,7 @@ export const init = async () => {
     return
   }
 
-	secrets = generate()
+  secrets = generate()
   await db.setSecrets(encodeJson(secrets))
 }
 
