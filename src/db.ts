@@ -3,7 +3,7 @@ import memoize from 'lodash/memoize'
 import { resolve } from 'path'
 
 import * as env from './lib/env'
-import { logger } from './logger'
+import { logError } from './logger'
 
 type KnexConfig = initKnex.Knex.Config
 type Knex = initKnex.Knex
@@ -43,8 +43,8 @@ export const destroyKnex = async () => {
 
   try {
     await cachedKnex?.destroy()
-  } catch (err: any) {
-    logger.error(err.stack)
+  } catch (err) {
+    logError(err)
   }
 }
 

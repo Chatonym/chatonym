@@ -39,3 +39,13 @@ export const chooseTransports = function* () {
 export const logger = createLogger({
   transports: [...chooseTransports()],
 })
+
+export const logError = (err: unknown): err is Error => {
+  if (err instanceof Error) {
+    logger.error(err.stack)
+    return true
+  }
+
+  logger.error(`Unknown error: ${JSON.stringify(err)}`)
+  return false
+}

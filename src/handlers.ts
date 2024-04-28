@@ -9,6 +9,7 @@ import * as compose from './lib/compose'
 import { extractChatInfo } from './lib/extract-chat-info'
 import * as links from './lib/links'
 import * as tgUtils from './lib/tg-utils'
+import { logError } from './logger'
 import { getNickForRecipient, getNickForSender } from './nick'
 
 export const init = (bot: Telegraf) => {
@@ -155,5 +156,8 @@ export const init = (bot: Telegraf) => {
 
   bot.on(message(), (ctx) => {
     ctx.react(compose.react.shrug)
+  bot.catch(async (err, ctx) => {
+    logError(err)
+    await ctx.react(compose.react.failed).catch(logError)
   })
 }

@@ -4,7 +4,7 @@ import { Telegraf } from 'telegraf'
 
 import * as handlers from './handlers'
 import * as env from './lib/env'
-import { logger } from './logger'
+import { logError, logger } from './logger'
 import * as secrets from './secrets'
 
 export const main = async () => {
@@ -35,7 +35,7 @@ if (require.main === module) {
   main().then(
     () => process.exit(),
     (err) => {
-      logger.error(err.stack)
+      logError(err)
       process.exit(1)
     },
   )
