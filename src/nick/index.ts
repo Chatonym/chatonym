@@ -36,16 +36,16 @@ export const getNick = (input: string) => {
   return getPrefix(n1) + getSuffix(n2) + '#' + getBase32Hash(n3)
 }
 
-export const getNickForSender = (rt: ChatInfo) => {
+export const getNickForSender = (chat: ChatInfo) => {
   const pepper = secrets.get('nickPepper')
-  const nickSeed = `${pepper}${rt.senderId}${rt.recipientId}${rt.seed}`
+  const nickSeed = `${pepper}${chat.senderId}${chat.recipientId}${chat.seed}`
   return getNick(nickSeed)
 }
 
-export const getNickForRecipient = (rt: ChatInfo) => {
+export const getNickForRecipient = (chat: ChatInfo) => {
   return getNickForSender({
-    senderId: rt.recipientId,
-    recipientId: rt.senderId,
-    seed: rt.seed,
+    senderId: chat.recipientId,
+    recipientId: chat.senderId,
+    seed: chat.seed,
   })
 }
