@@ -1,4 +1,4 @@
-import { Telegraf } from 'telegraf'
+import { Context, Telegraf } from 'telegraf'
 import { message } from 'telegraf/filters'
 import * as fmt from 'telegraf/format'
 
@@ -13,10 +13,21 @@ import { logError } from './logger'
 import { getNickForRecipient, getNickForSender } from './nick'
 
 export const init = (bot: Telegraf) => {
+  const help = async (ctx: Context) => {
+    const resp = compose.helpResponse()
+    await ctx.reply(resp.text, resp)
+  }
+
+  bot.help(help)
+
   bot.command('start', async (ctx) => {
     const [token] = ctx.args
     const botname = ctx.botInfo.username
     const senderId = ctx.from.id
+
+    if (!token) {
+      return help(ctx)
+    }
 
     const startInfo = startTokenCrypto.decrypt(token)
     if (!startInfo || startInfo.recipientId === senderId) {
@@ -44,7 +55,10 @@ export const init = (bot: Telegraf) => {
       nickname: recipientNick,
     })
 
-    await ctx.reply(replyHeader.text, replyHeader)
+    await ctx.reply(replyHeader.text, {
+      entities: replyHeader.entities,
+      ...tgUtils.noLinkPreview,
+    })
     await ctx.react(compose.react.done)
   })
 
@@ -83,7 +97,7 @@ export const init = (bot: Telegraf) => {
     const chatHash = chatTokenCrypto.chatHash(chatInfo)
     await db.terminate(chatHash)
 
-    ctx.react(compose.react.done)
+    await ctx.react(compose.react.done)
   })
 
   bot.on(message('reply_to_message'), async (ctx) => {
@@ -129,11 +143,6 @@ export const init = (bot: Telegraf) => {
     await ctx.react(succeed ? compose.react.done : compose.react.failed)
   })
 
-  bot.help(async (ctx) => {
-    const resp = compose.helpResponse()
-    await ctx.reply(resp.text, resp)
-  })
-
   bot.command('reactions', async (ctx) => {
     const resp = compose.reactionsResponse()
     await ctx.reply(resp.text, resp)
@@ -154,8 +163,10 @@ export const init = (bot: Telegraf) => {
     await ctx.reply(resp.text, resp)
   })
 
-  bot.on(message(), (ctx) => {
-    ctx.react(compose.react.shrug)
+  bot.on(message(), async (ctx) => {
+    await ctx.react(compose.react.shrug)
+  })
+
   bot.catch(async (err, ctx) => {
     logError(err)
     await ctx.react(compose.react.failed).catch(logError)

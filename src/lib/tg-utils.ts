@@ -7,6 +7,11 @@ import * as compose from './compose'
 export type ContentedMessage = Message.TextMessage | Message.CaptionableMessage
 export type OptionalContentedMessage = ContentedMessage | null | undefined
 
+export const noLinkPreview: Readonly<any> = Object.freeze({
+  /* eslint-disable-next-line camelcase */
+  disable_web_page_preview: true,
+})
+
 export const isRepliedToBot = (ctx: any) => {
   const replyToMessage = ctx?.message?.reply_to_message
   const botId = ctx?.botInfo?.id
@@ -145,6 +150,7 @@ export const resendMessage = async ({
   const commonExtra = {
     /* eslint-disable-next-line camelcase */
     protect_content: true,
+    ...noLinkPreview,
   }
 
   const sendText = (text: string) =>
@@ -169,7 +175,7 @@ export const resendMessage = async ({
 
   if (isPhotoMessage(msg)) {
     const photoId = msg.photo[0].file_id
-    await tg.sendPhoto(recipientId, photoId, captionExtra)
+    await tg.sendPhoto(recipientId, photoId)
   } else if (isAudioMessage(msg)) {
     const audioId = msg.audio.file_id
     await tg.sendAudio(recipientId, audioId, captionExtra)
