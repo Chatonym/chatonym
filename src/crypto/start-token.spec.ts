@@ -136,7 +136,7 @@ describe('crypto/start-token', () => {
 
       const res = startTokenCrypto.encrypt(st)
 
-      expect(res).to.equal(null)
+      expect(res).to.be.null
       expect(cacheSet).to.not.have.been.called
     })
   })
