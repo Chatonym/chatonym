@@ -21,7 +21,7 @@ export const popStr = (key: string, defaultValue: string | Throw = THROW) => {
   return val
 }
 
-export function uint(key: string, defaultValue: number | Throw = THROW) {
+export const uint = (key: string, defaultValue: number | Throw = THROW) => {
   const strDefault = defaultValue === THROW ? THROW : String(defaultValue)
   const num = Number(str(key, strDefault))
 

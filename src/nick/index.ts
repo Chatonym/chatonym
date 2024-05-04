@@ -6,14 +6,14 @@ import * as secrets from '../secrets'
 import prefixes from './prefixes.json'
 import suffixes from './suffixes.json'
 
-const HASH_ALGORITHM = env.str('CRYPTO_HASH_ALGORITHM', 'sha256')
-
 const PREFIXES_LEN = BigInt(prefixes.length)
 const SUFFIXES_LEN = BigInt(suffixes.length)
 const MAX_BASE32_HASH = 0x10000n
 
 const WANTED_HASH_BYTES = 24
 const WANTED_HASH_PARTS = Math.floor(WANTED_HASH_BYTES / 8)
+
+const getHashAlgorithm = () => env.str('CRYPTO_HASH_ALGORITHM', 'sha256')
 
 export const getPrefix = (n: bigint) => {
   const idx = Number(n % PREFIXES_LEN)
@@ -30,7 +30,7 @@ export const getBase32Hash = (n: bigint) => {
 }
 
 export const getNick = (input: string) => {
-  const hash = hashNBytes(HASH_ALGORITHM, input, WANTED_HASH_BYTES)
+  const hash = hashNBytes(getHashAlgorithm(), input, WANTED_HASH_BYTES)
 
   const [n1, n2, n3] = bufferToUInt64Array(hash, WANTED_HASH_PARTS)
   return getPrefix(n1) + getSuffix(n2) + '#' + getBase32Hash(n3)

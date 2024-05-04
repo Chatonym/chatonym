@@ -49,15 +49,15 @@ export const init = (bot: Telegraf) => {
     }
 
     const recipientNick = getNickForRecipient(senderChatInfo)
-    const replyLink = links.createReplyLink(botname, encryptedChatToken)
+    const replyLink = links.createChatLink(botname, encryptedChatToken)
     const replyHeader = compose.replyHeader({
-      replyLink,
+      chatLink: replyLink,
       nickname: recipientNick,
     })
 
     await ctx.reply(replyHeader.text, {
       entities: replyHeader.entities,
-      ...tgUtils.noLinkPreview,
+      ...tgUtils.NO_LINK_PREVIEW,
     })
     await ctx.react(compose.react.done)
   })
@@ -125,10 +125,10 @@ export const init = (bot: Telegraf) => {
       return ctx.react(compose.react.failed)
     }
 
-    const newReplyLink = links.createReplyLink(botname, theirChatInfo)
+    const newReplyLink = links.createChatLink(botname, theirChatInfo)
     const senderNick = getNickForSender(senderChatInfo)
     const header = compose.replyHeader({
-      replyLink: newReplyLink,
+      chatLink: newReplyLink,
       nickname: senderNick,
     })
 

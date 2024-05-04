@@ -3,21 +3,22 @@ import * as crypto from 'crypto'
 import * as env from '../lib/env'
 import { logger } from '../logger'
 
-export const ALGORITHM = env.str('CRYPTO_CIPHER_ALGORITHM', 'aes-256-cbc')
-export const IV_BYTES = env.uint('CRYPTO_IV_BYTES', 16)
-
 export type WithSalt<T> = T & { salt: string }
 
 export type WithoutSeed<T> = Omit<T, 'seed'>
 
-export const generateIv = () => crypto.randomBytes(IV_BYTES)
+const getAlgorithm = () => env.str('CRYPTO_CIPHER_ALGORITHM', 'aes-256-cbc')
+
+const getIvBytes = () => env.uint('CRYPTO_IV_BYTES', 16)
+
+export const generateIv = () => crypto.randomBytes(getIvBytes())
 
 export const encrypt = (
   secret: crypto.KeyObject,
   data: Buffer,
   iv = generateIv(),
 ) => {
-  const ciph = crypto.createCipheriv(ALGORITHM, secret, iv)
+  const ciph = crypto.createCipheriv(getAlgorithm(), secret, iv)
 
   try {
     const tokenBuf = Buffer.concat([iv, ciph.update(data), ciph.final()])
@@ -29,13 +30,16 @@ export const encrypt = (
   return null
 }
 
-export const decrypt = (secret: crypto.KeyObject, token: string) => {
-  try {
-    const tokenBuf = Buffer.from(token, 'base64url')
-    const iv = tokenBuf.subarray(0, IV_BYTES)
-    const encryptedData = tokenBuf.subarray(IV_BYTES)
+export const decrypt = (secret: crypto.KeyObject, encrypted: string) => {
+  const algo = getAlgorithm()
+  const ivBytes = getIvBytes()
 
-    const deciph = crypto.createDecipheriv(ALGORITHM, secret, iv)
+  try {
+    const tokenBuf = Buffer.from(encrypted, 'base64url')
+    const iv = tokenBuf.subarray(0, ivBytes)
+    const encryptedData = tokenBuf.subarray(ivBytes)
+
+    const deciph = crypto.createDecipheriv(algo, secret, iv)
     const decrypted = Buffer.concat([
       deciph.update(encryptedData),
       deciph.final(),

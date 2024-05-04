@@ -50,14 +50,14 @@ export const react = Object.freeze({
 } as const)
 
 export const replyHeader = ({
-  replyLink,
+  chatLink,
   nickname,
 }: {
-  replyLink: string
+  chatLink: string
   nickname: string
 }) => {
   return quote(
-    link(emoji.person, replyLink) as any,
+    link(emoji.person, chatLink) as any,
     ' ',
     bold(italic(underline(nickname))),
   )
@@ -91,7 +91,7 @@ export const helpResponse = () => {
     ", you need to reply to your recipient's nickname! Like this:",
     newline,
     replyHeader({
-      replyLink: 'https://t.me',
+      chatLink: 'https://t.me',
       nickname: 'TheirNickname#ABC',
     }),
     newline,

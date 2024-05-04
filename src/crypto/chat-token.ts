@@ -14,9 +14,9 @@ export interface ChatInfo extends startToken.StartToken {
   senderId: number
 }
 
-const CHAT_HASH_ALGORITHM = env.str('CRYPTO_HASH_ALGORITHM', 'sha256')
+export const getHashAlgorithm = () => env.str('CRYPTO_HASH_ALGORITHM', 'sha256')
 
-const CACHE = new LRUCache<CacheKey, string>({
+export const CACHE = new LRUCache<CacheKey, string>({
   max: env.uint('CACHE_MAX', 10000),
   ttl: env.uint('CACHE_TTL', 14400),
 })
@@ -54,7 +54,7 @@ export const deserialize = (buf: Buffer): ChatInfo => {
 
 export const getChatSecretKey = memoize(() => {
   const str = secrets.get('chatSecret')
-  return createSecretKey(Buffer.from(str, 'base64url'))
+  return createSecretKey(str, 'base64url')
 })
 
 export const encrypt = (chat: ChatInfo) => {
@@ -97,5 +97,5 @@ export const chatHash = (chat: ChatInfo) => {
   const user2Id = Math.max(chat.senderId, chat.recipientId)
   const str = `${pepper}${user1Id}${user2Id}${chat.seed}`
 
-  return crypto.createHash(CHAT_HASH_ALGORITHM).update(str).digest('base64url')
+  return crypto.createHash(getHashAlgorithm()).update(str).digest('base64url')
 }

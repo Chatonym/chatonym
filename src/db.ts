@@ -8,27 +8,32 @@ import { logError } from './logger'
 type KnexConfig = initKnex.Knex.Config
 type Knex = initKnex.Knex
 
-export const KNEX_CONFIG: Readonly<KnexConfig> = {
+export const prepareConnection = (con: any, done: () => void) => {
+  con.pragma('foreign_keys = ON')
+  done()
+}
+
+export const getKnexConfig = (): KnexConfig => ({
   client: 'better-sqlite3',
   connection: {
     filename: env.str('DB_FILE', resolve('chatonym.db')),
   },
   useNullAsDefault: true,
   pool: {
-    afterCreate(con: any, done: () => void) {
-      con.pragma('foreign_keys = ON')
-      done()
-    },
+    afterCreate: prepareConnection,
   },
-}
+})
 
-export const internalInit = async () => {
-  const cachedKnex = initKnex(KNEX_CONFIG)
+export const internalInit = async (createTables = true) => {
+  const cachedKnex = initKnex(getKnexConfig())
 
-  await createTerminatedChatTable(cachedKnex)
-  await createSecretsTable(cachedKnex)
+  process.off('beforeExit', destroyKnex)
+  process.once('beforeExit', destroyKnex)
 
-  process.off('beforeExit', destroyKnex).once('beforeExist', destroyKnex)
+  if (createTables) {
+    await createTerminatedChatTable(cachedKnex)
+    await createSecretsTable(cachedKnex)
+  }
 
   return cachedKnex
 }
@@ -37,6 +42,8 @@ export const init = memoize(internalInit)
 
 export const destroyKnex = async () => {
   const cachedKnex: Knex | undefined = init.cache.get(undefined)
+  init.cache.clear?.()
+
   if (!cachedKnex) {
     return
   }
@@ -48,38 +55,41 @@ export const destroyKnex = async () => {
   }
 }
 
-export const createTerminatedChatTable = async (knex?: Knex) => {
-  knex ||= await init()
+export const TERMINATED_CHAT = 'terminatedChat'
+export const SECRETS = 'secrets'
 
-  if (await knex.schema.hasTable('terminatedChat')) {
+export const createTerminatedChatTable = async (knex?: Knex) => {
+  knex ||= await init(false)
+
+  if (await knex.schema.hasTable(TERMINATED_CHAT)) {
     return
   }
 
-  await knex.schema.createTable('terminatedChat', (tc) =>
+  await knex.schema.createTable(TERMINATED_CHAT, (tc) =>
     tc.string('chatHash').primary(),
   )
 }
 
 export const createSecretsTable = async (knex?: Knex) => {
-  knex ||= await init()
+  knex ||= await init(false)
 
-  if (await knex.schema.hasTable('secrets')) {
+  if (await knex.schema.hasTable(SECRETS)) {
     return
   }
 
-  await knex.schema.createTable('secrets', (s) => s.string('secrets').primary())
+  await knex.schema.createTable(SECRETS, (s) => s.string('secrets').primary())
 }
 
 export const terminate = async (chatHash: string, knex?: Knex) => {
   knex ||= await init()
 
-  await knex('terminatedChat').insert({ chatHash }).onConflict().ignore()
+  await knex(TERMINATED_CHAT).insert({ chatHash }).onConflict().ignore()
 }
 
 export const isTerminated = async (chatHash: string, knex?: Knex) => {
   knex ||= await init()
 
-  const result = await knex('terminatedChat')
+  const result = await knex(TERMINATED_CHAT)
     .select(1)
     .where({ chatHash })
     .limit(1)
@@ -89,20 +99,27 @@ export const isTerminated = async (chatHash: string, knex?: Knex) => {
 export const getSecrets = async (knex?: Knex) => {
   knex ||= await init()
 
-  const res = await knex('secrets').first()
-  return res?.secrets ? String(res.secrets) : null
+  const results = await knex(SECRETS)
+  if (!results.length) {
+    return null
+  }
+  if (results.length > 1) {
+    throw new Error('Multiple secrets found')
+  }
+
+  return String(results[0].secrets)
 }
 
 export const setSecrets = async (secrets: string, knex?: Knex) => {
   knex ||= await init()
 
-  const alreadyExists = await knex('secrets').select(1).first()
+  const alreadyExists = await knex(SECRETS).select(1).first()
   if (alreadyExists) {
     throw new Error('Secrets already exist')
   }
 
   await knex.transaction(async (trx) => {
-    await trx('secrets').del()
-    await trx('secrets').insert({ secrets })
+    await trx(SECRETS).del()
+    await trx(SECRETS).insert({ secrets })
   })
 }

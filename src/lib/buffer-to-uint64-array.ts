@@ -1,12 +1,12 @@
-export const bufferToUInt64Array = (buf: Buffer, n = -1) => {
-  const maxN = Math.floor(buf.length / 8)
+export const zeroPadBuffer = (buf: Buffer, n: number) => {
+  const delta = n - buf.length
+  return delta > 0 ? Buffer.concat([Buffer.alloc(delta), buf]) : buf
+}
 
-  if (n > maxN) {
-    throw new RangeError('n is too large')
-  }
-  if (n < 0) {
-    n = maxN
-  }
-
+export const bufferToUInt64Array = (
+  buf: Buffer,
+  n = Math.ceil(buf.length / 8),
+) => {
+  buf = zeroPadBuffer(buf, n * 8)
   return Array.from({ length: n }, (_, i) => buf.readBigUInt64BE(i * 8))
 }

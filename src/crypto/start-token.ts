@@ -17,7 +17,7 @@ export interface StartToken {
   seed: number
 }
 
-const CACHE = new LRUCache<CacheKey, string>({
+export const CACHE = new LRUCache<CacheKey, string>({
   max: env.uint('CACHE_MAX', 10000),
   ttl: env.uint('CACHE_TTL', 14400),
 })

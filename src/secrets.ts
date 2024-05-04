@@ -10,6 +10,12 @@ interface Secrets {
   chatHashPepper: string
 }
 
+export let secrets: Secrets | null = null
+
+export const clear = () => {
+  secrets = null
+}
+
 export const generate = (): Secrets => {
   const SECRET_BYTES = env.uint('CRYPTO_SECRET_BYTES', 32)
   const PEPPER_BYTES = env.uint('CRYPTO_PEPPER_BYTES', 32)
@@ -21,8 +27,6 @@ export const generate = (): Secrets => {
     chatHashPepper: randomBase64(PEPPER_BYTES),
   }
 }
-
-let secrets: Secrets | null = null
 
 export const init = async () => {
   if (secrets) {
