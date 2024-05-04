@@ -33,7 +33,8 @@
     "start:dev": "ts-node src/main",
     "start:dist": "node dist/main",
     "start": "node bin/chatonym",
-    "test": "mocha"
+    "test": "mocha",
+		"cov": "c8 npm t"
   },
   "dependencies": {
     "better-sqlite3": "^9.5.0"
