@@ -23,8 +23,8 @@
     "bot": "./bot.js"
   },
   "scripts": {
-    "lint": "eslint \"src/**/*.ts\"",
-    "lint:fix": "eslint \"src/**/*.ts\" --fix .",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "clean": "rimraf dist bot.js",
     "build": "node ./scripts/build",
     "bundle": "node ./scripts/bundle",
@@ -37,6 +37,7 @@
     "better-sqlite3": "^9.5.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.0.2",
     "@types/better-sqlite3": "^7.6.10",
     "@types/chai": "^4.3.14",
     "@types/lodash": "^4.17.0",

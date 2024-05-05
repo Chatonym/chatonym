@@ -1,4 +1,11 @@
-module.exports = {
+const { FlatCompat } = require('@eslint/eslintrc')
+
+const compat = new FlatCompat({
+  baseDir: __dirname,
+  resolvePluginsRelativeTo: __dirname,
+})
+
+module.exports = compat.config({
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: 'tsconfig.json',
@@ -15,7 +22,7 @@ module.exports = {
     node: true,
     mocha: true,
   },
-  ignorePatterns: ['.eslintrc.js', 'dist/**/*.js'],
+  ignorePatterns: ['dist/**/*.js', 'bot.js'],
   rules: {
     'prettier/prettier': 'error',
     'no-console': 'off',
@@ -54,6 +61,12 @@ module.exports = {
         'no-unused-expressions': 'off',
       },
     },
+    {
+      files: '*.js',
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off',
+      },
+    },
   ],
   settings: {
     'import/resolver': {
@@ -62,4 +75,4 @@ module.exports = {
       },
     },
   },
-}
+})
