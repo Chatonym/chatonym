@@ -11,7 +11,7 @@ const ROOT = resolve(__dirname, '..')
 exports.bundle = async () => {
   await esbuild.build({
     entryPoints: [resolve(ROOT, 'src', 'main.ts')],
-    outfile: resolve(ROOT, 'bin', 'chatonym.js'),
+    outfile: resolve(ROOT, 'bin', 'bot.js'),
 
     minifyWhitespace: true,
     minifySyntax: true,

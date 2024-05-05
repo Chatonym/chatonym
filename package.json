@@ -20,7 +20,7 @@
   },
   "main": "dist/main.js",
   "bin": {
-    "chatonym": "./bin/chatonym.js"
+    "bot": "./bin/bot.js"
   },
   "scripts": {
     "lint": "eslint \"src/**/*.ts\"",
@@ -30,7 +30,7 @@
     "bundle": "node ./scripts/bundle",
     "start:dev": "ts-node src/main",
     "start:dist": "node dist/main",
-    "start": "node bin/chatonym",
+    "start": "node bin/bot",
     "test": "mocha",
 		"cov": "c8 npm t"
   },

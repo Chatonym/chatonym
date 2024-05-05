@@ -16,7 +16,7 @@ export const prepareConnection = (con: any, done: () => void) => {
 export const getKnexConfig = (): KnexConfig => ({
   client: 'better-sqlite3',
   connection: {
-    filename: env.str('DB_FILE', resolve('chatonym.db')),
+    filename: env.str('DB_FILE', resolve('bot.db')),
   },
   useNullAsDefault: true,
   pool: {
