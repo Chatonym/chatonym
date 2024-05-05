@@ -3,13 +3,10 @@ export const CHAT_TOKEN_QUERY_PARAM = 'chat'
 
 type QuerystringLike = ConstructorParameters<typeof URLSearchParams>[0]
 
-export const createBotLink = (
-	botname: string,
-	query: QuerystringLike = {}
-) => {
-	const baseUrl = `https://${botname}.t.me`
-	const qs = new URLSearchParams(query)
-	return `${baseUrl}?${qs}`
+export const createBotLink = (botname: string, query: QuerystringLike = {}) => {
+  const baseUrl = `https://${botname}.t.me`
+  const qs = new URLSearchParams(query)
+  return `${baseUrl}?${qs}`
 }
 
 export const createStartLink = (botname: string, startToken: string) => {
