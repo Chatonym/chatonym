@@ -1,10 +1,15 @@
 export const START_TOKEN_QUERY_PARAM = 'start'
 export const CHAT_TOKEN_QUERY_PARAM = 'chat'
 
-export const createBotLink = (botname: string, query: Record<string, any>) => {
-  const url = new URL(`https://${botname}.t.me`)
-  Object.entries(query).forEach(([k, v]) => url.searchParams.set(k, v))
-  return String(url)
+type QuerystringLike = ConstructorParameters<typeof URLSearchParams>[0]
+
+export const createBotLink = (
+	botname: string,
+	query: QuerystringLike = {}
+) => {
+	const baseUrl = `https://${botname}.t.me`
+	const qs = new URLSearchParams(query)
+	return `${baseUrl}?${qs}`
 }
 
 export const createStartLink = (botname: string, startToken: string) => {

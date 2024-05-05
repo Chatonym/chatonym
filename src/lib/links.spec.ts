@@ -6,21 +6,21 @@ describe('lib/links', () => {
   describe('.createBotLink()', () => {
     it('returns a bot link with requested querystring params', () => {
       const link = links.createBotLink('botfather', { foo: 'bar' })
-      expect(link).to.be.equal('https://t.me/botfather?foo=bar')
+      expect(link).to.be.equal('https://botfather.t.me?foo=bar')
     })
   })
 
   describe('.createStartLink()', () => {
     it('returns a start link', () => {
       const link = links.createStartLink('botfather', 'abcd')
-      expect(link).to.be.equal('https://t.me/botfather?start=abcd')
+      expect(link).to.be.equal('https://botfather.t.me?start=abcd')
     })
   })
 
   describe('.createChatLink()', () => {
     it('returns a chat link', () => {
       const link = links.createChatLink('botfather', 'abcd')
-      expect(link).to.be.equal('https://t.me/botfather?chat=abcd')
+      expect(link).to.be.equal('https://botfather.t.me?chat=abcd')
     })
   })
 
@@ -68,25 +68,31 @@ describe('lib/links', () => {
         expect(actual).to.be.null
       })
 
-      it('the origin is not t.me', () => {
+      it('the origin is not {botname}.t.me', () => {
         const actual = links.parseChatToken(
           'botfather',
-          'https://example.com/botfather?chat=abcd',
+          'https://godfather.t.me?chat=abcd',
         )
         expect(actual).to.be.null
       })
 
-      it('the pathname is not /{botname}', () => {
+      it('the pathname is not /', () => {
         const actual = links.parseChatToken(
           'botfahter',
-          'https://t.me/botmother?chat=abcd',
+          'https://botfather.t.me/x?chat=abcd',
         )
         expect(actual).to.be.null
       })
     })
 
-    it('returns the chat token', () => {
+    it('returns the chat token (t.me/{botname} style)', () => {
       const chatLink = 'https://t.me/botfather?chat=abcd'
+      const chatToken = links.parseChatToken('botfather', chatLink)
+      expect(chatToken).to.be.equal('abcd')
+    })
+
+    it('returns the chat token ({botname}.t.me style)', () => {
+      const chatLink = 'https://botfather.t.me?chat=abcd'
       const chatToken = links.parseChatToken('botfather', chatLink)
       expect(chatToken).to.be.equal('abcd')
     })
