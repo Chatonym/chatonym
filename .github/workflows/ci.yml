@@ -12,7 +12,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: 'npm'
       - name: dependencies
         run: npm ci
       - name: lint
         run: npm run lint
+      - name: test
+        run: npm t
