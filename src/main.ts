@@ -6,7 +6,6 @@ import * as handlers from './handlers'
 import * as env from './lib/env'
 import { logError, logger } from './logger'
 import * as secrets from './secrets'
-import * as testLint2 from 'fs'
 
 export const main = async () => {
   logger.info('Starting bot')
