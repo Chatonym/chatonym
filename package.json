@@ -14,7 +14,7 @@
     "random",
     "bot"
   ],
-  "license": "WTFPL",
+  "license": "BSD-3-Clause WITH ADDITIONAL RESTRICTIONS",
   "engines": {
     "node": "^18 || >=20"
   },

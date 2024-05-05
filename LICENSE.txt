@@ -1,0 +1,47 @@
+Chatonym License
+
+Copyright (c) 2024 Mohamad Fadavi <fadavi.mohamad@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including the rights to use, copy, modify,
+merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+* Additional Data Protection Clauses:
+
+In addition to the permissions and limitations granted by the BSD 3-clause
+License, operators of the Telegram bot, whether self-hosting or deploying it on
+a server, are subject to the following data protection restrictions:
+
+1. User Message Storage: Operators are prohibited from storing any of the
+following, whether plain text or encrypted:
+- User-generated messages to the bot
+- User-received messages from the bot
+
+2. User Information Storage: Operators are prohibited from storing any of the
+following user information, whether plain text or encrypted:
+- User's first name
+- User's last name
+- User's username
+- User's profile photos
+- Any other personal information provided by the Telegram API
+EXCEPTION: The only exception to this rule is the Telegram User ID, which the
+server may store in an encrypted or hashed format if strictly necessary for
+operational purposes.
+
+3. Self-Hosting and Project Name: Operators who self-host this bot are
+prohibited from using the name "chatonym" as the name of their self-hosted
+instance. The name "chatonym" is reserved for the original project.
