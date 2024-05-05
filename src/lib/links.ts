@@ -1,10 +1,8 @@
-export const T_DOT_ME = 'https://t.me'
-
 export const START_TOKEN_QUERY_PARAM = 'start'
 export const CHAT_TOKEN_QUERY_PARAM = 'chat'
 
 export const createBotLink = (botname: string, query: Record<string, any>) => {
-  const url = new URL(botname, T_DOT_ME)
+  const url = new URL(`https://${botname}.t.me`)
   Object.entries(query).forEach(([k, v]) => url.searchParams.set(k, v))
   return String(url)
 }
@@ -27,15 +25,24 @@ export const tryCreatingUrl = (url: string) => {
 
 export const parseChatToken = (botname: string, chatLink: string) => {
   const url = tryCreatingUrl(chatLink)
-
   if (
-    !url ||
-    url.protocol !== 'https:' ||
-    url.origin !== T_DOT_ME ||
-    url.pathname !== `/${botname}`
+    url?.protocol !== 'https:' ||
+    !url.searchParams.get(CHAT_TOKEN_QUERY_PARAM)
   ) {
     return null
   }
 
-  return url.searchParams.get(CHAT_TOKEN_QUERY_PARAM)
+  const token = url.searchParams.get(CHAT_TOKEN_QUERY_PARAM)
+
+  // t.me/{botname} style
+  if (url.origin === 'https://t.me' && url.pathname === `/${botname}`) {
+    return token
+  }
+
+  // {botname}.t.me style
+  if (url.origin === `https://${botname}.t.me` && url.pathname === `/`) {
+    return token
+  }
+
+  return null
 }
