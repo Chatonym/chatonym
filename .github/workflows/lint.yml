@@ -14,26 +14,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: npm ci # or yarn install
+      - run: npm ci
       - uses: sibiraj-s/action-eslint@v3
         with:
           eslint-args: '--ignore-path=.gitignore --quiet'
           extensions: 'js,jsx,ts,tsx'
           annotations: true
-  lint-all:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            eslintrc:
-              - '.eslintrc*'
-      - name: Run eslint on changed files
-        if: steps.filter.outputs.eslintrc == 'false'
-        uses: sibiraj-s/action-eslint@v2
-        with:
-          all-files: ${{ steps.filter.outputs.eslintrc == 'true' }}
-  
-          
