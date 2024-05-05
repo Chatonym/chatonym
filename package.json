@@ -23,8 +23,6 @@
     "chatonym": "./bin/chatonym.js"
   },
   "scripts": {
-    "format": "prettier --check \"src/**/*.ts\"",
-    "format:fix": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix .",
     "clean": "rimraf dist bin/*.js",
