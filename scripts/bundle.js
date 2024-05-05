@@ -1,49 +1,57 @@
 #!/usr/bin/env node
 
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { resolve } = require('path')
+const { join } = require('path')
+const { chmod } = require('fs/promises')
 
 const { nodeExternalsPlugin } = require('esbuild-node-externals')
 const esbuild = require('esbuild')
+const noop = require('lodash/noop')
 
-const ROOT = resolve(__dirname, '..')
+const markExecutable = async (filePath) => chmod(filePath, 0o755).catch(noop)
 
-exports.bundle = async () => {
-  await esbuild.build({
-    entryPoints: [resolve(ROOT, 'src', 'main.ts')],
-    outfile: resolve(ROOT, 'bin', 'bot.js'),
+const bundle = async (root = join(__dirname, '..')) => {
+	const outfile = join(root, 'bot.js')
 
-    minifyWhitespace: true,
-    minifySyntax: true,
-    minify: true,
-    keepNames: true,
-    bundle: true,
+	await esbuild.build({
+		entryPoints: [join(root, 'src', 'main.ts')],
+		outfile,
 
-    platform: 'node',
-    target: 'esnext',
-    format: 'iife',
+		minifyWhitespace: true,
+		minifySyntax: true,
+		minify: true,
+		keepNames: true,
+		bundle: true,
 
-    external: [],
+		platform: 'node',
+		target: 'esnext',
+		format: 'iife',
 
-    legalComments: 'none',
-    banner: {
-      js: '#!/usr/bin/env node',
-    },
+		external: [],
 
-    plugins: [
-      nodeExternalsPlugin({
-        optionalDependencies: false,
-        devDependencies: false,
-        peerDependencies: true,
-        dependencies: true,
-      }),
-    ],
-  })
+		legalComments: 'none',
+		banner: {
+			js: '#!/usr/bin/env node',
+		},
+
+		plugins: [
+			nodeExternalsPlugin({
+				optionalDependencies: false,
+				devDependencies: false,
+				peerDependencies: true,
+				dependencies: true,
+			}),
+		],
+	})
+
+	await markExecutable(outfile)
 }
 
+exports.bundle = bundle
+
 if (require.main === module) {
-  exports.bundle().catch((err) => {
-    console.error(err)
-    process.exit(1)
-  })
+	bundle().catch((err) => {
+		console.error(err)
+		process.exit(1)
+	})
 }

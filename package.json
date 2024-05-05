@@ -18,21 +18,20 @@
   "engines": {
     "node": "^18 || >=20"
   },
-  "main": "dist/main.js",
+  "main": "./bot.js",
   "bin": {
-    "bot": "./bin/bot.js"
+    "bot": "./bot.js"
   },
   "scripts": {
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix .",
-    "clean": "rimraf dist bin/*.js",
-    "build": "tsc",
+    "clean": "rimraf dist bot.js",
+    "build": "node ./scripts/build",
     "bundle": "node ./scripts/bundle",
     "start:dev": "ts-node src/main",
-    "start:dist": "node dist/main",
-    "start": "node bin/bot",
+    "start": "node bot",
     "test": "mocha",
-		"cov": "c8 npm t"
+    "cov": "c8 npm t"
   },
   "dependencies": {
     "better-sqlite3": "^9.5.0"
@@ -67,6 +66,7 @@
     "rimraf": "^5.0.5",
     "sinon": "^17.0.1",
     "sinon-chai": "^3.7.0",
+    "tar": "^7.1.0",
     "telegraf": "^4.16.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.8.2",
